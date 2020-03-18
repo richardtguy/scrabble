@@ -24,13 +24,13 @@ def create_app():
 	# log to stdout if deployed to Heroku
 	if app.config['LOG_TO_STDOUT']:
 		logging.getLogger().addHandler(logging.StreamHandler())
-	
+
 	# initialise extensions
 	db.init_app(app)
 	migrate.init_app(app, db)
 	login.init_app(app)
 	mail.init_app(app)
-	
+
 	# register blueprints
 	from app.auth import bp as auth_bp
 	app.register_blueprint(auth_bp, url_prefix='/auth')
@@ -38,8 +38,12 @@ def create_app():
 	app.register_blueprint(main_bp)
 
 	# add cli commands
-	from app.auth.commands import create_user, delete_user	
+	from app.auth.commands import create_user, delete_user
 	app.cli.add_command(create_user)
 	app.cli.add_command(delete_user)
+
+	# add cli commands
+	from app.main.commands import flush
+	app.cli.add_command(flush)
 
 	return app
