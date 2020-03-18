@@ -47,6 +47,9 @@ def index():
 			return redirect(url_for('main.game', code=new.code))
 		elif request.form['action'] == 'join':
 			join_game = Game.query.filter_by(code=request.form['code']).first()
+			if not join_game:
+				flash("Game not found", "danger")
+				return redirect(url_for('main.index'))
 			flash("Welcome to the game!  There are {} tiles left".format(len(join_game.bag)), "success")
 			return redirect(url_for('main.game', code=request.form['code']))
 	return render_template('index.html')
