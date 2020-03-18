@@ -24,7 +24,7 @@ def new_game():
 		db.session.rollback()
 	finally:
 		db.session.close()
-	return code
+	return Game.query.filter_by(code=code).first()
 
 def draw_tiles(number, game):
 	if number > len(game.bag):
@@ -42,10 +42,12 @@ def draw_tiles(number, game):
 def index():
 	if request.method == "POST":
 		if request.form['action'] == 'start':
-			new_game_code = new_game()
-			flash("Started new game! Your code is: {}".format(new_game_code), "success")
-			return redirect(url_for('main.game', code=new_game_code))
+			new = new_game()
+			flash("Started new game! There are {} tiles. Your code is: {}".format(len(new.bag), new.code), "success")
+			return redirect(url_for('main.game', code=new.code))
 		elif request.form['action'] == 'join':
+			join_game = Game.query.filter_by(code=request.form['code']).first()
+			flash("Welcome to the game!  There are {} tiles left".format(len(join_game.bag)), "success")
 			return redirect(url_for('main.game', code=request.form['code']))
 	return render_template('index.html')
 
@@ -62,8 +64,6 @@ def game(code):
 		else:
 			flash("Your tiles: {} ({} tiles left)".format(tiles,
 				len(current_game.bag)), "success")
-		render_template('game.html')
-	if not current_game:
-		flash("Game not found", "danger")
-		return redirect(url_for('main.index'))
-	return render_template('game.html', bag=len(current_game.bag))
+		return render_template('game.html')
+	else:
+		return render_template('game.html', bag=len(current_game.bag))
