@@ -60,7 +60,8 @@ def game(code):
 		if tiles == None:
 			flash("Oops, there was a problem... try again", "danger")
 		else:
-			flash("Your tiles: {}".format(tiles), "success")
+			flash("Your tiles: {} ({} tiles left)".format(tiles,
+				len(current_game.bag)), "success")
 		render_template('game.html')
 	if not current_game:
 		flash("Game not found", "danger")
