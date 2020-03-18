@@ -51,7 +51,7 @@ class Game(db.Model):
     Database model for game
     """
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(6), index=True, unique=True)
+    code = db.Column(db.String(6), unique=True)
     bag = db.Column(db.String(128))
 
     def fill_bag(self):
